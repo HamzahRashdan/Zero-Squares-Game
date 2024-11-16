@@ -2,6 +2,7 @@ import time
 from copy import deepcopy
 from collections import deque
 
+
 class GameState:
     def __init__(self, walls, goals, players, reached_goal):
         self.walls = walls
@@ -67,15 +68,15 @@ class Game:
 
         return new_states
 
-    def bfs(self):
+    def dfs(self):
         initial_state = self.state.copy()
-        queue = deque([(initial_state, [])]) 
+        stack = [(initial_state, [])]  
         visited = set()
         visited_states = [] 
         nodes_visited = 0
 
-        while queue:
-            current_state, path = queue.popleft()
+        while stack:
+            current_state, path = stack.pop()  
             nodes_visited += 1
 
             visited_states.append(deepcopy(current_state)) 
@@ -91,7 +92,7 @@ class Game:
             for move_row, move_col in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 new_states = self.simulate_move(current_state, move_row, move_col)
                 for new_state in new_states:
-                    queue.append((new_state, path + [current_state]))
+                    stack.append((new_state, path + [current_state]))  
 
         return None, nodes_visited, visited_states  
 
@@ -101,19 +102,18 @@ class Game:
 
 
 if __name__ == "__main__":
-
     board_details = {
 
         "walls": [
-            (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12),
-            (2, 2), (2, 12),
-            (3, 0), (3, 1), (3, 2), (3, 5), (3, 6), (3, 7), (3, 8), (3, 9), (3, 10), (3, 12),
-            (4, 0), (4, 10), (4, 12),
-            (5, 0), (5, 2), (5, 10), (5, 12),
-            (6, 0), (6, 12),
-            (7, 0), (7, 1), (7, 2), (7, 3), (7, 12),
-            (8, 3), (8, 4), (8, 5), (8, 6), (8, 7), (8, 8), (8, 9), (8, 10), (8, 11), (8, 12),
-        ],
+                    (1, 2), (1, 3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9),(1,10),(1,11),(1,12),
+                    (2,2),(2,12),
+                    (3, 0),(3,1),(3,2),(3, 5),(3, 6),(3, 7),(3, 8),(3, 9),(3, 10),(3, 12),
+                    (4, 0),(4, 10),(4,12),
+                    (5, 0),(5, 2),(5, 10),(5, 12),
+                    (6,0),(6, 12),
+                    (7,0), (7,1), (7,2), (7,3),(7,12),
+                    (8, 3), (8, 4), (8, 5), (8, 6), (8, 7), (8, 8), (8, 9), (8, 10), (8, 11), (8, 12),
+                ],
         "players": [
             {"position": (2, 3), }
         ],
@@ -122,12 +122,12 @@ if __name__ == "__main__":
         ]
     }
 
-
-    rows, cols = 12, 14
+    
+    rows, cols = 15, 14
     game = Game(rows, cols, board_details)
 
-
-    solution_path, nodes_visited, visited_states = game.bfs()
+    
+    solution_path, nodes_visited, visited_states = game.dfs()
 
     if solution_path:
         print(f"Solution found in {len(solution_path) - 1} steps!")
@@ -147,7 +147,7 @@ if __name__ == "__main__":
                         row_str += ". "
                 print(row_str)
             print()
-            time.sleep(1) 
+            time.sleep(1)  
 
     
         print("\nVisited Nodes:")
